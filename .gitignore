@@ -1,0 +1,15 @@
+*.o
+*.asm
+*.s
+
+*.out
+*.exe
+*.dll
+
+*.gch
+
+*.a
+*.so
+
+
+todo.txt
