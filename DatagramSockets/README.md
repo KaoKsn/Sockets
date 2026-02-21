@@ -15,7 +15,7 @@
 ```bash
     make
     ./listener port
-    ./talker hostname port
+    ./talker host port message
 ```
 
 
