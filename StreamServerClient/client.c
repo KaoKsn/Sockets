@@ -26,7 +26,11 @@ int main(int argc, char **argv)
         fprintf(stderr, "Usage: client host port\n");
         return 1;
     }
-    // TODO: validate port number.
+    int port = atoi(argv[2]);
+    if (port <= 0 || port > 65535) {
+        fprintf(stderr, "Suggest a valid port number!\n");
+        return 1;
+    }
     int status, sockfd, bytes_received;
     struct addrinfo hints, *server, *p;
     char ipstr[INET6_ADDRSTRLEN] = {'\0'}, buffer[MAXSIZE] = {'\0'};
@@ -66,7 +70,7 @@ int main(int argc, char **argv)
     printf("Connected to %s: %s on port %s\n", argv[1], ipstr, argv[2]);
     bytes_received = recv(sockfd, buffer, MAXSIZE - 1, 0);
     if (bytes_received == -1) {
-        perror("client: recv() failed!\n");
+        perror("client: ");
         exit(4);
     }
     printf("client: received %s\n", buffer);

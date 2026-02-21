@@ -6,7 +6,6 @@
  *
 **/
 
-// TODO: remove any trailing whitespaces.
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netdb.h>
@@ -52,20 +51,20 @@ int main(void)
 	for (p = server; p != NULL; p = p->ai_next) {
 		sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 		if (sockfd == -1) {
-			perror("server: socket() error\n");
+			perror("server: ");
 			continue;
 		}
 		// Address "Address already in use error!"
 		int yes = 1;
 		if (setsockopt(sockfd, SOL_SOCKET , SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
-			perror("server: Couldn't free address for use!\n");
+			perror("server: ");
 			close(sockfd);
 			freeaddrinfo(server);
 			exit(1);
 		}
 
 		if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-			perror("server: bind() error!\n");
+			perror("server: ");
 			continue;
 		}
 		// If everything works well, use the socket.
@@ -80,7 +79,7 @@ int main(void)
 
 	// listen
 	if (listen(sockfd, BACKLOG) == -1) {
-		perror("server: listen()\n");
+		perror("server: ");
 		exit(1);
 	}
 
@@ -89,7 +88,7 @@ int main(void)
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
     if (sigaction(SIGCHLD, &sa, NULL) == -1) {
-        perror("sigaction\n");
+        perror("sigaction: ");
         exit(1);
     }
 
@@ -109,12 +108,12 @@ int main(void)
 		// fork a child process to handle the connection.
         int child = fork();
         if (child == -1) {
-            perror("fork() failed!\n");
+            perror("fork(): ");
         } else if (child == 0) { // child
             close(sockfd); // child doesn't need the listening sockfd.
             char *msg = "Hello, client\n";
             if (send(new_fd, msg, strlen(msg), 0) == -1)
-                perror("send()\n");
+                perror("send(): ");
             close(new_fd);
             exit(0);
         }
