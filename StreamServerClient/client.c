@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     for (p = server; p != NULL; p = p->ai_next) {
         sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
         if (sockfd == -1) {
-            perror("client: ");
+            perror("client");
             continue;
         }
         inet_ntop(p->ai_family, get_addr_in(p->ai_addr), ipstr, sizeof(ipstr));
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     printf("Connected to %s: %s on port %s\n", argv[1], ipstr, argv[2]);
     bytes_received = recv(sockfd, buffer, MAXSIZE - 1, 0);
     if (bytes_received == -1) {
-        perror("client: ");
+        perror("client");
         exit(4);
     }
     printf("client: received %s\n", buffer);
