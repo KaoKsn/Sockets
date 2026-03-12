@@ -19,15 +19,24 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define PORT "1024"
+#define DEFAULT_PORT "1024"
 #define BACKLOG 10
 
 void sigchild_handler(int s);
 void *get_addr_in(struct sockaddr *sa);
 int getport(struct sockaddr *sa);
 
-int main(void)
+int main(int argc, char **argv)
 {
+    char *PORT = argc == 1 ? DEFAULT_PORT : argv[1];
+    if (argc > 1) {
+        int port = atoi(argv[1]);
+        if (port <= 0 || port > 65535) {
+            fprintf(stderr, "Suggest a valid port number!\n");
+            return 1;
+        }
+    }
+
 	// server.
 	int sockfd, status, new_fd;
 	struct addrinfo hints, *server, *p;
@@ -51,20 +60,20 @@ int main(void)
 	for (p = server; p != NULL; p = p->ai_next) {
 		sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 		if (sockfd == -1) {
-			perror("server: ");
+			perror("server");
 			continue;
 		}
 		// Address "Address already in use error!"
 		int yes = 1;
 		if (setsockopt(sockfd, SOL_SOCKET , SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
-			perror("server: ");
+			perror("server");
 			close(sockfd);
 			freeaddrinfo(server);
 			exit(1);
 		}
 
 		if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-			perror("server: ");
+			perror("server");
 			continue;
 		}
 		// If everything works well, use the socket.
@@ -79,7 +88,7 @@ int main(void)
 
 	// listen
 	if (listen(sockfd, BACKLOG) == -1) {
-		perror("server: ");
+		perror("server");
 		exit(1);
 	}
 
@@ -88,7 +97,7 @@ int main(void)
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
     if (sigaction(SIGCHLD, &sa, NULL) == -1) {
-        perror("sigaction: ");
+        perror("sigaction");
         exit(1);
     }
 
@@ -108,12 +117,12 @@ int main(void)
 		// fork a child process to handle the connection.
         int child = fork();
         if (child == -1) {
-            perror("fork(): ");
+            perror("fork");
         } else if (child == 0) { // child
             close(sockfd); // child doesn't need the listening sockfd.
-            char *msg = "Hello, client\n";
+            char *msg = "Hello, client!\n";
             if (send(new_fd, msg, strlen(msg), 0) == -1)
-                perror("send(): ");
+                perror("send");
             close(new_fd);
             exit(0);
         }
