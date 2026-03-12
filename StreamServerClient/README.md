@@ -14,8 +14,8 @@
 ## Compile and Test:
 ```bash
     make
-    ./server port
-    ./client hostname port
+    ./build/server port
+    ./build/client localhost port
 ```
 
 ---- 
