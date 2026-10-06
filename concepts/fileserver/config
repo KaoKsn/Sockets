@@ -1,0 +1,9 @@
+{
+	"server": {
+		"index": false,
+		"port": 8080,
+		"bind_addr": "127.0.0.1",
+		"backlog": 8,
+		"root": "./content"
+	}
+}
