@@ -11,5 +11,4 @@
 *.a
 *.so
 
-
-todo.txt
+__pycache__/
