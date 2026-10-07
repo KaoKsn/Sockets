@@ -1,0 +1,11 @@
+to extract the second byte from the left,
+	value >> 16 & 0xff
+
+/16 for subnet mask: 255.255.0.0
+
+Convert /24 to a subnet mask(value)
+	(0xFFFFFFFF << (32 - prefix)) & 0xFFFFFFFF
+	since python follows random precision integer arithmetic.
+
+Get the host from the given IP and subnet mask
+	IP & mask => subnet number.
